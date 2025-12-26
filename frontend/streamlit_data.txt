@@ -1,0 +1,549 @@
+import streamlit as st
+import sys, os
+import pandas as pd
+import plotly.express as px
+import numpy as np
+
+# Ensure project root is on path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(project_root)
+
+# Import modular UI components
+from components.inputs import city_and_mode_selector
+from components.environment import show_environment
+from components.material import show_material
+from components.severity import show_severity
+from components.visuals import show_comparison_chart, show_map
+from components.geo_mask import show_masked_heatmap, show_masked_heatmap_c
+
+# Import backend agents
+from agent.geocode_agent import get_coordinates
+from agent.weather_agent import get_weather, get_pollution
+from agent.material_agent import get_material_properties
+from backend.models.corrosion_model import estimate_corrosion_rate
+from database.corrosion_db import init_db, insert_record
+from database.cache_manager import load_cached_data, save_to_cache
+from database.live_sites_loader import load_live_sites
+from components.interpolation import show_interpolated_map
+
+
+# Initialize session state
+if "page" not in st.session_state:
+    st.session_state.page = "Intro"
+
+# Sidebar navigation
+st.sidebar.title("Navigation")
+st.session_state.page = st.sidebar.radio(
+    "Go to",
+    ["Intro", "Corrosion Prediction: Model 1", "Corrosion Prediction: Model 2",
+     "Map View: Model 1", "Map View: CECRI Dataset"]
+)
+
+page = st.session_state.page
+# Initialize DB
+init_db()
+
+st.set_page_config(page_title="Corrosion Predictor", layout="wide")
+st.title("🔩 Corrosion Predictor Dashboard")
+
+#show_live_clock()
+
+# --- Sidebar Navigation ---
+page = st.sidebar.radio("Navigation", [
+    "Intro",
+    "Corrosion Prediction: Model 1",
+    "Map View: Model 1",
+    "Corrosion Prediction: Model 2",
+    "Map View: Model 2",
+    "About"
+])
+
+from components.intro import show_intro
+# --- Page 0: Intro ---
+if page == "Intro":
+    show_intro()
+
+from components.about import show_about
+from components.severity import classify_severity
+from frontend.components.intro_map_1 import show_map_intro
+from frontend.components.intro_cecri import show_cecri_intro
+
+# --- Page About ---
+if page == "About":
+    show_about()
+
+# --- Page 1: Corrosion Prediction ---
+if page == "Corrosion Prediction: Model 1":
+    from frontend.components.intro import show_intro
+    from frontend.components.format_units import format_props_table   # <-- import helper
+    from frontend.components.intro_model_1 import show_intro_
+    show_intro_()
+
+    # --- Input Mode Toggle ---
+    input_mode = st.radio("Choose Input Mode", ["City Name", "Latitude/Longitude"])
+
+    if input_mode == "City Name":
+        city, mode, grade = city_and_mode_selector()
+
+        if st.button("Predict Corrosion"):
+            try:
+                lat, lon = get_coordinates(city)
+                weather = get_weather(lat, lon)
+                pollution = get_pollution(lat, lon)
+
+                st.subheader(f"📍 Site: {city} (lat={lat:.4f}, lon={lon:.4f})")
+                show_environment(weather, pollution)
+
+                if mode == "Single Grade":
+                    props = get_material_properties(grade)
+                    rate = estimate_corrosion_rate(weather, pollution, props)
+                    insert_record(lat, lon, weather, pollution, grade, rate)
+
+                    # --- Material Properties First ---
+                    st.markdown("### 🧪 Material Properties (IS 1786:2008)")
+                    format_props_table(props)   # <-- use helper
+
+                    # --- Corrosion Rate Output ---
+                    st.markdown("### 📈 Estimated Corrosion Rate")
+                    st.metric(label="Corrosion Rate", value=f"{rate:.4f} mm/year")
+                    st.success(f"Corrosion Severity: {classify_severity(rate)}")
+
+                    if st.button("🔄 Refresh"):
+                        st.experimental_rerun()
+                        st.markdown(
+                            "<script>window.scrollTo(0,0);</script>",
+                            unsafe_allow_html=True
+                        )
+
+                elif mode == "Compare All Grades":
+                    results = []
+                    for g in ["Fe415", "Fe500", "Fe500D", "Fe550", "Fe600"]:
+                        props = get_material_properties(g)
+                        rate = estimate_corrosion_rate(weather, pollution, props)
+                        results.append({"Grade": g, "Corrosion Rate (mm/year)": rate})
+                        insert_record(lat, lon, weather, pollution, g, rate)
+
+                    show_comparison_chart(city, results)
+
+                    if st.button("🔄 Refresh"):
+                        st.experimental_rerun()
+                        st.markdown(
+                            "<script>window.scrollTo(0,0);</script>",
+                            unsafe_allow_html=True
+                        )
+
+            except Exception as e:
+                st.error(f"❌ Prediction failed: {e}")
+
+    else:  # Latitude/Longitude mode
+        lat = st.number_input("Enter Latitude", format="%.6f")
+        lon = st.number_input("Enter Longitude", format="%.6f")
+        mode = st.radio("Choose Mode", ["Single Grade", "Compare All Grades"])
+        grade = None
+        if mode == "Single Grade":
+            grade = st.selectbox("Select Rebar Grade", ["Fe415", "Fe500", "Fe500D", "Fe550", "Fe600"])
+
+        if st.button("Predict Corrosion"):
+            try:
+                weather = get_weather(lat, lon)
+                pollution = get_pollution(lat, lon)
+
+                st.subheader(f"📍 Site: lat={lat:.4f}, lon={lon:.4f}")
+                show_environment(weather, pollution)
+
+                if mode == "Single Grade":
+                    props = get_material_properties(grade)
+                    rate = estimate_corrosion_rate(weather, pollution, props)
+                    insert_record(lat, lon, weather, pollution, grade, rate)
+
+                    # --- Material Properties First ---
+                    st.markdown("### 🧪 Material Properties (IS 1786:2008)")
+                    format_props_table(props)   # <-- use helper
+
+                    # --- Corrosion Rate Output ---
+                    st.markdown("### 📈 Estimated Corrosion Rate")
+                    st.metric(label="Corrosion Rate", value=f"{rate:.4f} mm/year")
+                    st.success(f"Corrosion Severity: {classify_severity(rate)}")
+
+                    if st.button("🔄 Refresh"):
+                        st.experimental_rerun()
+                        st.markdown(
+                            "<script>window.scrollTo(0,0);</script>",
+                            unsafe_allow_html=True
+                        )
+
+                elif mode == "Compare All Grades":
+                    results = []
+                    for g in ["Fe415", "Fe500", "Fe500D", "Fe550", "Fe600"]:
+                        props = get_material_properties(g)
+                        rate = estimate_corrosion_rate(weather, pollution, props)
+                        results.append({"Grade": g, "Corrosion Rate (mm/year)": rate})
+                        insert_record(lat, lon, weather, pollution, g, rate)
+
+                    show_comparison_chart(f"Lat={lat}, Lon={lon}", results)
+
+                    if st.button("🔄 Refresh"):
+                        st.experimental_rerun()
+                        st.markdown(
+                            "<script>window.scrollTo(0,0);</script>",
+                            unsafe_allow_html=True
+                        )
+
+            except Exception as e:
+                st.error(f"❌ Prediction failed: {e}")
+
+# --- Page 2: Map View ---    
+elif page == "Map View: Model 1":
+    show_map_intro()
+    # Grade selector
+    map_grade = st.selectbox("Select Grade for Map View", ["Fe415", "Fe500", "Fe500D", "Fe550", "Fe600"])
+
+    # Resolution slider for interpolation
+    resolution = st.slider("Interpolation Resolution (°)", min_value=0.1, max_value=1.0, value=0.25, step=0.05)
+
+    # Enter button to trigger map creation
+    if st.button("Enter"):
+        # ✅ Load static lat/lon for the 12 cities
+        df_live = load_live_sites("data/live_cities.csv")
+
+        map_data = []
+        counter = 0
+        total = len(df_live)
+
+        # Progress bar + status text
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+
+        # ✅ Single loop: iterate through df_live rows
+        for _, row in df_live.iterrows():
+            city_name = row["City"]
+            lat = row["Latitude"]
+            lon = row["Longitude"]
+
+            try:
+                # Try cache first
+                rate = load_cached_data(city_name, map_grade)
+                if rate is None:
+                    weather = get_weather(lat, lon)
+                    pollution = get_pollution(lat, lon)
+                    props = get_material_properties(map_grade)
+                    rate = estimate_corrosion_rate(weather, pollution, props)
+                    save_to_cache(city_name, lat, lon, map_grade, rate)
+
+                map_data.append({
+                    "City": city_name,
+                    "Latitude": lat,
+                    "Longitude": lon,
+                    "CorrosionRate": rate
+                })
+
+                # Update progress bar + logs
+                counter += 1
+                progress_bar.progress(counter / total)
+                status_text.text(f"Processed {counter}/{total} cities → {city_name}: {rate:.3f} mm/year")
+                print(f"[Map Loader] {counter}/{total} → {city_name}: {rate:.3f} mm/year")
+
+            except Exception as e:
+                st.warning(f"Skipping {city_name}: {e}")
+
+        progress_bar.empty()
+        status_text.text("✅ Map data loaded successfully")
+
+        if map_data:
+            df_map = pd.DataFrame(map_data)
+
+            # Show raw city points
+            show_map(df_map, map_grade)
+
+            # Boundary-aware heatmap
+            st.write("### 🧭 Boundary-Aware Heatmap")
+            show_masked_heatmap(df_map, map_grade, resolution)
+            # --- Refresh Button ---
+            if st.button("🔄 Refresh Map View"):
+                st.experimental_rerun()
+                st.markdown(
+                    """
+                    <script>
+                    window.scrollTo(0,0);
+                    </script>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+
+# --- Page 3: CECRI Archival Benchmark ---
+elif page == "Corrosion Prediction: Model 2":
+    show_cecri_intro()
+
+    mode = st.radio("Choose Mode", ["Single Material", "Compare All Materials"])
+    model_type = st.selectbox("Select Model", ["SVR", "Random Forest", "XGBoost"])
+    training_type = st.radio("Training Type", ["Direct ML", "Hybrid ISO+ML"])
+    log_transform = st.checkbox("Apply Log Transform to Corrosion Rate")
+
+    if mode == "Single Material":
+        material = st.selectbox(
+            "Select Material for Training",
+            ["Carbon Steel", "Zinc", "Galvanized Steel", "Aluminum"]
+        )
+
+        if st.button("Train Model"):
+            try:
+                # --- Train model based on selection ---
+                if model_type == "SVR":
+                    from backend.models.c_cecri_svr import train_cecri_svr, plot_feature_importance
+                    result = train_cecri_svr(material, log_transform=log_transform)
+
+                elif model_type == "Random Forest":
+                    from backend.models.c_random_forest import train_cecri_rf, plot_feature_importance
+                    result = train_cecri_rf(material, log_transform=log_transform)
+
+                elif model_type == "XGBoost":
+                    if training_type == "Direct ML":
+                        from backend.models.c_xgboost import train_cecri_xgb, plot_feature_importance
+                        result = train_cecri_xgb(material, log_transform=log_transform)
+                    else:
+                        from backend.models.c_xgboost_residual import train_cecri_xgb_residual, plot_feature_importance
+                        result = train_cecri_xgb_residual(material, log_transform=log_transform)
+
+                # --- Strategy selection ---
+                from backend.services.c_model_selector import select_model_strategy
+                strategy, message = select_model_strategy(material, result)
+                st.info(message)
+
+                # --- Display metrics ---
+                st.success("✅ Model trained successfully")
+                st.write(f"**RMSE:** {result['rmse']:.3f}")
+                st.write(f"**R²:** {result['r2']:.3f}")
+                st.write(f"**Best Params:** {result['best_params']}")
+
+                # --- Load dataset for plotting ---
+                df = pd.read_csv("data/cecri_materials.csv")
+                df = df[df["Material"] == material].dropna()
+
+                # --- Feature engineering (same as training) ---
+                X = df[["Temperature", "Humidity", "Salinity", "Rainfall"]].copy()
+                X["Salinity_Humidity"] = df["Salinity"] * df["Humidity"]
+                X["Rainfall_Temperature"] = df["Rainfall"] * df["Temperature"]
+                X["CoastalFlag"] = (df["Salinity"] > df["Salinity"].median()).astype(int)
+                X["IndustrialFlag"] = (df["Humidity"] > 70).astype(int)
+                y = df["CorrosionRate"]
+
+                # --- Predictions based on strategy ---
+                if strategy == "ISO":
+                    from backend.models.iso_estimator import estimate_iso_rate
+                    df["ISO_Rate"] = df.apply(estimate_iso_rate, axis=1)
+                    y_pred = df["ISO_Rate"]
+                    fig_imp = None  # ISO-only has no ML feature importance
+
+                elif strategy == "Hybrid":
+                    df["ISO_Rate"] = df.apply(estimate_iso_rate, axis=1)
+                    residual_pred = result["model"].predict(X)
+                    y_pred = df["ISO_Rate"] + residual_pred
+                    fig_imp = plot_feature_importance(
+                        result["model"], result["features"], result["residuals"], result["features"].columns.tolist()
+                    )
+
+                else:  # Direct ML
+                    if model_type == "SVR":
+                        X_scaled = result["scaler"].transform(X)
+                        y_pred = result["model"].predict(X_scaled)
+                        fig_imp = plot_feature_importance(result["model"], X_scaled, y, result["features"])
+                    elif model_type == "Random Forest":
+                        y_pred = result["model"].predict(X)
+                        fig_imp = plot_feature_importance(result["model"], X, y, result["features"])
+                    elif model_type == "XGBoost":
+                        y_pred = result["model"].predict(X)
+                        fig_imp = plot_feature_importance(result["model"], X, y, result["features"])
+
+                # --- Scatter plot ---
+                import matplotlib.pyplot as plt
+                fig_scatter, ax1 = plt.subplots()
+                ax1.scatter(y, y_pred, alpha=0.7, edgecolors="k")
+                ax1.plot([y.min(), y.max()], [y.min(), y.max()], "r--", lw=2)
+                ax1.set_xlabel("Actual Corrosion Rate")
+                ax1.set_ylabel("Predicted Corrosion Rate")
+                ax1.set_title(f"{model_type} ({strategy}) Performance for {material}")
+                fig_scatter.tight_layout()
+
+                # --- Side-by-side layout ---
+                col1, col2 = st.columns([2, 1])
+                with col1:
+                    st.write("### 📉 Prediction Scatter Plot")
+                    st.pyplot(fig_scatter, width='stretch')
+                with col2:
+                    if fig_imp is not None:
+                        st.write("### 📊 Feature Importance")
+                        st.pyplot(fig_imp, width='stretch')
+                    else:
+                        st.write("### 📊 Feature Importance")
+                        st.info("ISO-only strategy → no ML feature importance available.")
+
+                # --- Research Disclaimer ---
+                st.markdown("""
+                ---
+                ### 📑 Research Note
+                Despite extensive benchmarking, the **CECRI archival dataset** could not be fit into a viable
+                predictive model using SVR, Random Forest, or XGBoost.  
+                This highlights the **limitations of legacy data** and reinforces the need for modern,
+                high‑resolution environmental datasets for corrosion prediction research.
+                """)
+
+                # --- Refresh Button ---
+                if st.button("🔄 Refresh Page"):
+                    st.experimental_rerun()
+                    st.markdown(
+                        """
+                        <script>
+                        window.scrollTo(0,0);
+                        </script>
+                        """,
+                        unsafe_allow_html=True
+                    )
+
+            except Exception as e:
+                st.error(f"❌ Error: {e}")
+
+    elif mode == "Compare All Materials":
+        materials = ["Carbon Steel", "Zinc", "Galvanized Steel", "Aluminum"]
+        results = []
+
+        if st.button("Run Comparison"):
+            for mat in materials:
+                try:
+                    # --- Train model based on selection ---
+                    if model_type == "SVR":
+                        from backend.models.c_cecri_svr import train_cecri_svr
+                        result = train_cecri_svr(mat, log_transform=log_transform)
+
+                    elif model_type == "Random Forest":
+                        from backend.models.c_random_forest import train_cecri_rf
+                        result = train_cecri_rf(mat, log_transform=log_transform)
+
+                    elif model_type == "XGBoost":
+                        if training_type == "Direct ML":
+                            from backend.models.c_xgboost import train_cecri_xgb
+                            result = train_cecri_xgb(mat, log_transform=log_transform)
+                        else:
+                            from backend.models.c_xgboost_residual import train_cecri_xgb_residual
+                            result = train_cecri_xgb_residual(mat, log_transform=log_transform)
+
+                    # --- Strategy selection ---
+                    from backend.services.c_model_selector import select_model_strategy
+                    strategy, _ = select_model_strategy(mat, result)
+
+                    results.append({
+                        "Material": mat,
+                        "RMSE": round(result["rmse"], 3),
+                        "R²": round(result["r2"], 3),
+                        "Strategy": strategy
+                    })
+
+                except Exception as e:
+                    results.append({
+                        "Material": mat,
+                        "RMSE": None,
+                        "R²": None,
+                        "Strategy": f"⚠️ Failed: {e}"
+                    })
+
+            # --- Display results ---
+            st.success("✅ Comparison complete")
+            df = pd.DataFrame(results)
+            st.write("### 📊 Model Comparison Across Materials")
+            st.dataframe(df)
+
+            import plotly.express as px
+            fig = px.bar(
+                df,
+                x="Material",
+                y="RMSE",
+                text="Strategy",
+                color="Material",
+                title=f"{model_type} ({training_type}) RMSE Comparison"
+            )
+            fig.update_traces(textposition="outside")
+            fig.update_layout(yaxis_title="RMSE (µm/year)", xaxis_title="Material")
+            st.plotly_chart(fig, use_container_width=True)
+
+            # --- Research Disclaimer ---
+            st.markdown("""
+            ---
+            ### 📑 Research Note
+            The **CECRI archival dataset** shows poor fit across all tested models.  
+            This underscores the importance of **modern, high‑resolution datasets** for reliable corrosion prediction.
+            """)
+
+            # --- Refresh Button ---
+            if st.button("🔄 Refresh Page"):
+                st.experimental_rerun()
+                st.markdown(
+                    """
+                    <script>
+                    window.scrollTo(0,0);
+                    </script>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+
+# --- Page 4: Map View: CECRI Dataset ---# 
+elif page == "Map View: Model 2":
+    st.write("### 🗺️ CECRI Archival Corrosion Map")
+    show_cecri_intro()
+    st.info("This view plots the **reported corrosion rates** from CECRI’s archival dataset directly on a map. \
+             No predictive model is applied — this is a raw visualization of legacy data.")
+
+    # --- Material selector ---
+    cecri_material = st.selectbox(
+        "Select Material for Map View",
+        ["Carbon Steel", "Zinc", "Galvanized Steel", "Aluminum"]
+    )
+
+    # --- Resolution slider ---
+    resolution = st.slider("Interpolation Resolution (°)", min_value=0.1, max_value=1.0, value=0.25, step=0.05)
+
+    if st.button("Generate CECRI Map"):
+        try:
+            # --- Load datasets ---
+            df_mat = pd.read_csv("data/cecri_materials.csv")
+            df_sites = pd.read_csv("data/cecri_sites.csv")
+
+            # --- Filter by material ---
+            df_mat = df_mat[df_mat["Material"] == cecri_material].dropna()
+
+            # --- Merge with site metadata ---
+            df_map = pd.merge(df_mat, df_sites, on=["Site", "Latitude", "Longitude"], how="left")
+
+            # --- Show raw city points ---
+            st.write("### 📍 Reported Site Points")
+            df_points = df_map[["Site", "Latitude", "Longitude", "CorrosionRate"]].copy()
+            df_points = df_points.rename(columns={"Site": "City"})
+            show_map(df_points, cecri_material)  # helper expecting City will now work
+
+            # --- Boundary-aware heatmap ---
+            st.write("### 🧭 Boundary-Aware Heatmap")
+            show_masked_heatmap_c(df_map[["Latitude", "Longitude", "CorrosionRate"]], cecri_material, resolution)
+
+            # --- Research Disclaimer ---
+            st.markdown("""
+            ---
+            ### 📑 Research Note
+            These plots show **raw CECRI archival values**.  
+            While they provide spatial context, the dataset could not be fit into viable predictive models.  
+            This underscores the need for **modern, high‑resolution datasets** for reliable corrosion mapping.
+            """)
+
+            # --- Refresh Button ---
+            if st.button("🔄 Refresh Map View"):
+                st.experimental_rerun()
+                st.markdown(
+                    """
+                    <script>
+                    window.scrollTo(0,0);
+                    </script>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+        except Exception as e:
+            st.error(f"❌ Error loading CECRI map: {e}")

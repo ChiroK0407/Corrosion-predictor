@@ -1,0 +1,161 @@
+Site,Latitude,Longitude,Material,Temperature,Humidity,Salinity,Rainfall,CorrosionRate
+Aligarh,27.88,78.08,Carbon Steel,23,74,20,217,15.904
+Bhavnagar,21.76,72.15,Carbon Steel,28,73,0,186,12.730
+Bhopal,23.27,77.40,Carbon Steel,25,73,24,501,9.820
+Bhubaneswar,20.27,85.84,Carbon Steel,27,73.5,21,336,24.400
+Chandigarh,30.74,76.79,Carbon Steel,23,74.5,18,269,21.440
+Naval base Chennai,13.08,80.27,Carbon Steel,29.5,73.5,486,355,524.000
+Coimbatore,11.02,76.97,Carbon Steel,30,76,20,240,16.000
+Cuddalore,11.75,79.77,Carbon Steel,28,77,63,702,51.300
+Dindigul,10.37,77.98,Carbon Steel,29,67,15,64,69.720
+Hyderabad,17.39,78.49,Carbon Steel,29.5,71,18,165,23.511
+Jorhat,26.75,94.22,Carbon Steel,25.5,75.5,22,686,7.439
+CECRI Unit Kochi,9.97,76.28,Carbon Steel,27,72.5,50,580,90.500
+Kakinada,16.96,82.24,Carbon Steel,27.5,75.5,121,320,82.000
+Karaikudi,10.07,78.78,Carbon Steel,27,72.5,38,180,19.970
+Kolkota,22.57,88.36,Carbon Steel,24,72,36,320,22.600
+Kanyakumari,8.09,77.54,Carbon Steel,28,72.5,38,89,15.640
+Kayamkulam,9.17,76.50,Carbon Steel,24,91,448,426,42.000
+Lucknow,26.85,80.95,Carbon Steel,26.5,91,28,426,12.320
+Mahendragiri,12.50,77.70,Carbon Steel,28,91.5,0,83,13.570
+Manali,13.17,80.27,Carbon Steel,29,78.5,120,309,115.000
+Mandapam Camp,9.28,79.12,Carbon Steel,29.5,67.5,246,96,109.050
+Mangalore,12.87,74.84,Carbon Steel,26.5,77.5,110,308,108.400
+Marumagao,15.42,73.81,Carbon Steel,25,73.5,630,248,453.900
+Mettupalayam,11.30,76.94,Carbon Steel,27.5,89.5,0,22,300.000
+Mumbai,19.07,72.88,Carbon Steel,26,73.5,48,945,44.000
+Nagapattinam,10.77,79.84,Carbon Steel,28,70.5,29,750,28.900
+Naval Base Kochi,9.97,76.28,Carbon Steel,27.5,76.5,79,592,156.600
+New Delhi,28.61,77.23,Carbon Steel,23,77,79,184,19.770
+NIO Goa,15.45,73.81,Carbon Steel,23.5,76,0,184,30.000
+Padubidri,13.13,74.76,Carbon Steel,25.5,79,124,310,43.000
+Pondicherry,11.93,79.83,Carbon Steel,28.5,72.5,37,735,27.420
+Port Blair,11.67,92.75,Carbon Steel,26.5,78.5,356,3028,380.000
+Pune,18.52,73.86,Carbon Steel,25,75,34,167,12.400
+Salem,11.67,78.15,Carbon Steel,30,72.5,45,68,16.160
+Sriharikota,13.72,80.23,Carbon Steel,27.5,74,5000,450,1600.000
+Surat,21.17,72.83,Carbon Steel,28,73,22,310,27.300
+Tirupur,11.11,77.34,Carbon Steel,28.5,92,20,214,18.000
+Tuticorin,8.76,78.13,Carbon Steel,28,74,59,90,83.810
+Visakhapatnam,17.69,83.22,Carbon Steel,28,78,23,327,36.690
+Warangal,18.00,79.58,Carbon Steel,30,72.5,0,170,9.843
+Aligarh,27.88,78.08,Zinc,23,74,20,217,2.263
+Bhavnagar,21.76,72.15,Zinc,28,73,0,186,0.385
+Bhopal,23.27,77.40,Zinc,25,73,24,501,0.356
+Bhubaneswar,20.27,85.84,Zinc,27,73.5,21,336,0.828
+Chandigarh,30.74,76.79,Zinc,23,74.5,18,269,1.200
+Naval base Chennai,13.08,80.27,Zinc,29.5,73.5,486,355,7.100
+Coimbatore,11.02,76.97,Zinc,30,76,20,240,1.000
+Cuddalore,11.75,79.77,Zinc,28,77,63,702,2.200
+Dindigul,10.37,77.98,Zinc,29,67,15,64,4.958
+Hyderabad,17.39,78.49,Zinc,29.5,71,18,165,2.556
+Jorhat,26.75,94.22,Zinc,25.5,75.5,22,686,0.881
+CECRI Unit Kochi,9.97,76.28,Zinc,27,72.5,50,580,2.530
+Kakinada,16.96,82.24,Zinc,27.5,75.5,121,320,
+Karaikudi,10.07,78.78,Zinc,27,72.5,38,180,1.100
+Kolkota,22.57,88.36,Zinc,24,72,36,320,1.290
+Kanyakumari,8.09,77.54,Zinc,28,72.5,38,89,1.960
+Kayamkulam,9.17,76.50,Zinc,24,91,448,426,3.000
+Lucknow,26.85,80.95,Zinc,26.5,91,28,426,5.067
+Mahendragiri,12.50,77.70,Zinc,28,91.5,0,83,6.250
+Manali,13.17,80.27,Zinc,29,78.5,120,309,23.800
+Mandapam Camp,9.28,79.12,Zinc,29.5,67.5,246,96,12.150
+Mangalore,12.87,74.84,Zinc,26.5,77.5,110,308,1.370
+Marumagao,15.42,73.81,Zinc,25,73.5,630,248,19.412
+Mettupalayam,11.30,76.94,Zinc,27.5,89.5,0,22,7.000
+Mumbai,19.07,72.88,Zinc,26,73.5,48,945,2.600
+Nagapattinam,10.77,79.84,Zinc,28,70.5,29,750,2.700
+Naval Base Kochi,9.97,76.28,Zinc,27.5,76.5,79,592,6.304
+New Delhi,28.61,77.23,Zinc,23,77,79,184,0.560
+NIO Goa,15.45,73.81,Zinc,23.5,76,0,184,1.260
+Padubidri,13.13,74.76,Zinc,25.5,79,124,310,2.000
+Pondicherry,11.93,79.83,Zinc,28.5,72.5,37,735,0.992
+Port Blair,11.67,92.75,Zinc,26.5,78.5,356,3028,220.000
+Pune,18.52,73.86,Zinc,25,75,34,167,1.480
+Salem,11.67,78.15,Zinc,30,72.5,45,68,1.655
+Sriharikota,13.72,80.23,Zinc,27.5,74,5000,450,46.000
+Surat,21.17,72.83,Zinc,28,73,22,310,2.080
+Tirupur,11.11,77.34,Zinc,28.5,92,20,214,0.100
+Tuticorin,8.76,78.13,Zinc,28,74,59,90,32.200
+Visakhapatnam,17.69,83.22,Zinc,28,78,23,327,3.600
+Warangal,18.00,79.58,Zinc,30,72.5,0,170,2.805
+Aligarh,27.88,78.08,Galvanized Steel,23,74,20,217,2.779
+Bhavnagar,21.76,72.15,Galvanized Steel,28,73,0,186,0.402
+Bhopal,23.27,77.40,Galvanized Steel,25,73,24,501,0.117
+Bhubaneswar,20.27,85.84,Galvanized Steel,27,73.5,21,336,1.492
+Chandigarh,30.74,76.79,Galvanized Steel,23,74.5,18,269,1.616
+Naval base Chennai,13.08,80.27,Galvanized Steel,29.5,73.5,486,355,11.660
+Coimbatore,11.02,76.97,Galvanized Steel,30,76,20,240,
+Cuddalore,11.75,79.77,Galvanized Steel,28,77,63,702,4.200
+Dindigul,10.37,77.98,Galvanized Steel,29,67,15,64,2.084
+Hyderabad,17.39,78.49,Galvanized Steel,29.5,71,18,165,2.360
+Jorhat,26.75,94.22,Galvanized Steel,25.5,75.5,22,686,1.047
+CECRI Unit Kochi,9.97,76.28,Galvanized Steel,27,72.5,50,580,2.860
+Kakinada,16.96,82.24,Galvanized Steel,27.5,75.5,121,320,
+Karaikudi,10.07,78.78,Galvanized Steel,27,72.5,38,180,0.381
+Kolkota,22.57,88.36,Galvanized Steel,24,72,36,320,1.754
+Kanyakumari,8.09,77.54,Galvanized Steel,28,72.5,38,89,2.489
+Kayamkulam,9.17,76.50,Galvanized Steel,24,91,448,426,
+Lucknow,26.85,80.95,Galvanized Steel,26.5,91,28,426,7.344
+Mahendragiri,12.50,77.70,Galvanized Steel,28,91.5,0,83,3.520
+Manali,13.17,80.27,Galvanized Steel,29,78.5,120,309,4.560
+Mandapam Camp,9.28,79.12,Galvanized Steel,29.5,67.5,246,96,12.550
+Mangalore,12.87,74.84,Galvanized Steel,26.5,77.5,110,308,6.710
+Marumagao,15.42,73.81,Galvanized Steel,25,73.5,630,248,184.100
+Mettupalayam,11.30,76.94,Galvanized Steel,27.5,89.5,0,22,
+Mumbai,19.07,72.88,Galvanized Steel,26,73.5,48,945,3.600
+Nagapattinam,10.77,79.84,Galvanized Steel,28,70.5,29,750,0.322
+Naval Base Kochi,9.97,76.28,Galvanized Steel,27.5,76.5,79,592,6.445
+New Delhi,28.61,77.23,Galvanized Steel,23,77,79,184,2.845
+NIO Goa,15.45,73.81,Galvanized Steel,23.5,76,0,184,2.260
+Padubidri,13.13,74.76,Galvanized Steel,25.5,79,124,310,
+Pondicherry,11.93,79.83,Galvanized Steel,28.5,72.5,37,735,
+Port Blair,11.67,92.75,Galvanized Steel,26.5,78.5,356,3028,270.000
+Pune,18.52,73.86,Galvanized Steel,25,75,34,167,2.420
+Salem,11.67,78.15,Galvanized Steel,30,72.5,45,68,1.400
+Sriharikota,13.72,80.23,Galvanized Steel,27.5,74,5000,450,
+Surat,21.17,72.83,Galvanized Steel,28,73,22,310,2.540
+Tirupur,11.11,77.34,Galvanized Steel,28.5,92,20,214,
+Tuticorin,8.76,78.13,Galvanized Steel,28,74,59,90,24.480
+Visakhapatnam,17.69,83.22,Galvanized Steel,28,78,23,327,2.750
+Warangal,18.00,79.58,Galvanized Steel,30,72.5,0,170,6.500
+Aligarh,27.88,78.08,Aluminum,23,74,20,217,0.538
+Bhavnagar,21.76,72.15,Aluminum,28,73,0,186,0.185
+Bhopal,23.27,77.40,Aluminum,25,73,24,501,0.230
+Bhubaneswar,20.27,85.84,Aluminum,27,73.5,21,336,0.731
+Chandigarh,30.74,76.79,Aluminum,23,74.5,18,269,0.138
+Naval base Chennai,13.08,80.27,Aluminum,29.5,73.5,486,355,8.600
+Coimbatore,11.02,76.97,Aluminum,30,76,20,240,4.000
+Cuddalore,11.75,79.77,Aluminum,28,77,63,702,1.162
+Dindigul,10.37,77.98,Aluminum,29,67,15,64,0.050
+Hyderabad,17.39,78.49,Aluminum,29.5,71,18,165,0.434
+Jorhat,26.75,94.22,Aluminum,25.5,75.5,22,686,0.050
+CECRI Unit Kochi,9.97,76.28,Aluminum,27,72.5,50,580,0.180
+Kakinada,16.96,82.24,Aluminum,27.5,75.5,121,320,
+Karaikudi,10.07,78.78,Aluminum,27,72.5,38,180,0.395
+Kolkota,22.57,88.36,Aluminum,24,72,36,320,0.231
+Kanyakumari,8.09,77.54,Aluminum,28,72.5,38,89,3.120
+Kayamkulam,9.17,76.50,Aluminum,24,91,448,426,0.500
+Lucknow,26.85,80.95,Aluminum,26.5,91,28,426,7.280
+Mahendragiri,12.50,77.70,Aluminum,28,91.5,0,83,5.320
+Manali,13.17,80.27,Aluminum,29,78.5,120,309,1.410
+Mandapam Camp,9.28,79.12,Aluminum,29.5,67.5,246,96,0.700
+Mangalore,12.87,74.84,Aluminum,26.5,77.5,110,308,5.100
+Marumagao,15.42,73.81,Aluminum,25,73.5,630,248,11.000
+Mettupalayam,11.30,76.94,Aluminum,27.5,89.5,0,22,9.000
+Mumbai,19.07,72.88,Aluminum,26,73.5,48,945,2.500
+Nagapattinam,10.77,79.84,Aluminum,28,70.5,29,750,0.050
+Naval Base Kochi,9.97,76.28,Aluminum,27.5,76.5,79,592,0.870
+New Delhi,28.61,77.23,Aluminum,23,77,79,184,0.295
+NIO Goa,15.45,73.81,Aluminum,23.5,76,0,184,0.248
+Padubidri,13.13,74.76,Aluminum,25.5,79,124,310,1.400
+Pondicherry,11.93,79.83,Aluminum,28.5,72.5,37,735,0.100
+Port Blair,11.67,92.75,Aluminum,26.5,78.5,356,3028,40.000
+Pune,18.52,73.86,Aluminum,25,75,34,167,0.050
+Salem,11.67,78.15,Aluminum,30,72.5,45,68,0.050
+Sriharikota,13.72,80.23,Aluminum,27.5,74,5000,450,0.050
+Surat,21.17,72.83,Aluminum,28,73,22,310,3.930
+Tirupur,11.11,77.34,Aluminum,28.5,92,20,214,3.000
+Tuticorin,8.76,78.13,Aluminum,28,74,59,90,27.100
+Visakhapatnam,17.69,83.22,Aluminum,28,78,23,327,4.850
+Warangal,18.00,79.58,Aluminum,30,72.5,0,170,0.050
