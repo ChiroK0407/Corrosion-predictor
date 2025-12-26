@@ -31,4 +31,4 @@ Welcome to the **Corrosion Intelligence Platform** — a research-driven tool th
 git clone https://github.com/<your-username>/Corrosion-predictor.git
 cd Corrosion-predictor
 pip install -r requirements.txt
-streamlit run frontend/streamlit_app.py
+streamlit run frontend/Home.py
